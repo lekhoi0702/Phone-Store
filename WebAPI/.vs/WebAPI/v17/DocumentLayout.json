@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "WebAPI\\Controllers\\BrandController.cs",
               "ToolTip": "D:\\Phone-Store\\WebAPI\\WebAPI\\Controllers\\BrandController.cs",
               "RelativeToolTip": "WebAPI\\Controllers\\BrandController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGoAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAcwBYAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-17T06:59:22.184Z",
               "EditorCaption": ""
@@ -51,8 +51,7 @@
               "RelativeToolTip": "WebAPI\\Models\\PhoneStoreDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T06:58:01.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T06:58:01.144Z"
             },
             {
               "$type": "Document",
@@ -64,8 +63,7 @@
               "RelativeToolTip": "WebAPI\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T06:57:10.823Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T06:57:10.823Z"
             },
             {
               "$type": "Document",
@@ -77,8 +75,7 @@
               "RelativeToolTip": "WebAPI\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-17T06:47:57.154Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T06:47:57.154Z"
             }
           ]
         }
