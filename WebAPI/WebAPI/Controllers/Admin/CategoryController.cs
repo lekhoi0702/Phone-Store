@@ -63,17 +63,50 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [HttpPut]
-    // public IActionResult UpdateCategory(int id, Category category)
-    // { 
-        
-    // }
+    [HttpPut("{id}")]
+    public IActionResult UpdateCategory(int id, Category category)
+    {
+        try
+        {
+            if (category == null || category.CategoryId != id)
+            {
+                return BadRequest();
+            }
+            var existingCategory = _context.Categories.Find(id);
+            if (existingCategory == null)
+            {
+                return NotFound();
+            }
+            existingCategory.CategoryName = category.CategoryName;
+            existingCategory.Description = category.Description;
+            existingCategory.IsActive = category.IsActive;
+            existingCategory.UpdatedAt = DateTime.Now;
+            _context.Update(existingCategory);
+            _context.SaveChanges();
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
 
-    
-
-  
-
-
+    [HttpDelete("{id}")]
+    public IActionResult DeleteCategory(int id)
+    {
+        try
+        {
+            var existingCategory = _context.Categories.Find(id);
+            if (existingCategory == null)
+            {
+                return NotFound();
+            }
+            _context.Categories.Remove(existingCategory);
+            _context.SaveChanges();
+            return NoContent();
+        }
+        catch (Exception e) { return StatusCode(500, e.Message); }
+    }
 
 }
 
