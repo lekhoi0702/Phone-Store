@@ -152,12 +152,11 @@ CREATE TABLE Users (
     UserId INT IDENTITY(1,1) PRIMARY KEY,
     Email VARCHAR(255) NOT NULL UNIQUE,
     PasswordHash VARCHAR(255) NOT NULL,
-    Salt VARCHAR(255) NOT NULL, -- Để hash password an toàn hơn
+    
     
     -- Thông tin cá nhân
     FirstName NVARCHAR(100) COLLATE Vietnamese_CI_AS NOT NULL,
     LastName NVARCHAR(100) COLLATE Vietnamese_CI_AS NOT NULL,
-    FullName AS (FirstName + ' ' + LastName) PERSISTED, -- Computed column
     PhoneNumber VARCHAR(15) NULL,
     DateOfBirth DATE NULL,
     Gender VARCHAR(10) NULL, -- Male, Female, Other
