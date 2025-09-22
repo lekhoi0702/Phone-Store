@@ -1,10 +1,8 @@
-
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 
 [ApiController]
 [Route("api/[controller]")]
-
 public class UserController : ControllerBase
 {
     private readonly PhoneStoreDbContext _context;
@@ -30,8 +28,8 @@ public class UserController : ControllerBase
         {
             return StatusCode(500, e.Message);
         }
-
     }
+
     [HttpGet("{id}")]
     public IActionResult GetUserById(int id)
     {
@@ -59,6 +57,7 @@ public class UserController : ControllerBase
             {
                 return NotFound();
             }
+            user.RoleId = 3;
             _context.Users.Add(user);
             _context.SaveChanges();
             return CreatedAtAction(nameof(User), new { id = user.UserId });
@@ -70,22 +69,32 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateUser(int id, User user)
+    public IActionResult UpdateUser(User user, int id)
     {
         try
         {
-            if (user == null || user.UserId != id)
+            if (user.UserId != id)
             {
-                return BadRequest();
+                return BadRequest("Tài khoản không hợp lệ");
             }
             var existingUser = _context.Users.Find(id);
             if (existingUser == null)
             {
-                return NotFound();
+                return NotFound("Không tìm thấy tài khoản");
             }
-            
-
-
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+            existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.DateOfBirth = user.DateOfBirth;
+            existingUser.Gender = user.Gender;
+            existingUser.DefaultAddress = user.DefaultAddress;
+            existingUser.Ward = user.Ward;
+            existingUser.District = user.District;
+            existingUser.Province = user.Province;
+            existingUser.IsActive = user.IsActive;
+            _context.Update(existingUser);
+            _context.SaveChanges();
+            return NoContent();
         }
         catch (Exception e)
         {

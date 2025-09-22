@@ -6,14 +6,10 @@ namespace WebAPI.Models;
 
 public partial class PhoneStoreDbContext : DbContext
 {
-    public PhoneStoreDbContext()
-    {
-    }
+    public PhoneStoreDbContext() { }
 
     public PhoneStoreDbContext(DbContextOptions<PhoneStoreDbContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public virtual DbSet<Brand> Brands { get; set; }
 
@@ -51,7 +47,10 @@ public partial class PhoneStoreDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DTJHV1130;Database=PhoneStoreDB;Trusted_Connection=True;TrustServerCertificate=True;");
+        =>
+        optionsBuilder.UseSqlServer(
+            "Server=DTJHV1130;Database=PhoneStoreDB;Trusted_Connection=True;TrustServerCertificate=True;"
+        );
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -62,9 +61,7 @@ public partial class PhoneStoreDbContext : DbContext
             entity.HasIndex(e => e.BrandName, "UQ__Brands__2206CE9B6690677A").IsUnique();
 
             entity.Property(e => e.BrandLogo).HasMaxLength(500);
-            entity.Property(e => e.BrandName)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.BrandName).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Description).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -75,18 +72,24 @@ public partial class PhoneStoreDbContext : DbContext
         {
             entity.HasKey(e => e.CartItemId).HasName("PK__CartItem__488B0B0ABD418E21");
 
-            entity.HasIndex(e => new { e.CartId, e.VariantId }, "UQ_CartItems_CartVariant").IsUnique();
+            entity
+                .HasIndex(e => new { e.CartId, e.VariantId }, "UQ_CartItems_CartVariant")
+                .IsUnique();
 
             entity.Property(e => e.AddedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Quantity).HasDefaultValue(1);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(18, 2)");
 
-            entity.HasOne(d => d.Cart).WithMany(p => p.CartItems)
+            entity
+                .HasOne(d => d.Cart)
+                .WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.CartId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartItems_Carts");
 
-            entity.HasOne(d => d.Variant).WithMany(p => p.CartItems)
+            entity
+                .HasOne(d => d.Variant)
+                .WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.VariantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartItems_Variants");
@@ -98,13 +101,9 @@ public partial class PhoneStoreDbContext : DbContext
 
             entity.HasIndex(e => e.CategoryName, "UQ__Categori__8517B2E05BEE4B6E").IsUnique();
 
-            entity.Property(e => e.CategoryName)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.CategoryName).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.Description)
-                .HasMaxLength(500)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.Description).HasMaxLength(500).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
         });
@@ -115,19 +114,11 @@ public partial class PhoneStoreDbContext : DbContext
 
             entity.HasIndex(e => e.CouponCode, "UQ__Coupons__D34908000AF996E2").IsUnique();
 
-            entity.Property(e => e.CouponCode)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.CouponName)
-                .HasMaxLength(200)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.CouponCode).HasMaxLength(50).IsUnicode(false);
+            entity.Property(e => e.CouponName).HasMaxLength(200).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.Description)
-                .HasMaxLength(500)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.DiscountType)
-                .HasMaxLength(20)
-                .IsUnicode(false);
+            entity.Property(e => e.Description).HasMaxLength(500).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.DiscountType).HasMaxLength(20).IsUnicode(false);
             entity.Property(e => e.DiscountValue).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.MaxDiscountAmount).HasColumnType("decimal(18, 2)");
@@ -142,17 +133,23 @@ public partial class PhoneStoreDbContext : DbContext
             entity.Property(e => e.DiscountAmount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UsedAt).HasDefaultValueSql("(getdate())");
 
-            entity.HasOne(d => d.Coupon).WithMany(p => p.CouponUsages)
+            entity
+                .HasOne(d => d.Coupon)
+                .WithMany(p => p.CouponUsages)
                 .HasForeignKey(d => d.CouponId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CouponUsages_Coupons");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.CouponUsages)
+            entity
+                .HasOne(d => d.Order)
+                .WithMany(p => p.CouponUsages)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CouponUsages_Orders");
 
-            entity.HasOne(d => d.User).WithMany(p => p.CouponUsages)
+            entity
+                .HasOne(d => d.User)
+                .WithMany(p => p.CouponUsages)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CouponUsages_Users");
@@ -172,53 +169,47 @@ public partial class PhoneStoreDbContext : DbContext
 
             entity.HasIndex(e => e.OrderNumber, "UQ__Orders__CAC5E74367BFDC4C").IsUnique();
 
-            entity.Property(e => e.AdminNotes)
-                .HasMaxLength(500)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.AdminNotes).HasMaxLength(500).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.DiscountAmount).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.Notes)
-                .HasMaxLength(500)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.OrderNumber)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.PaymentMethod)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.PaymentStatus)
+            entity.Property(e => e.Notes).HasMaxLength(500).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.OrderNumber).HasMaxLength(50).IsUnicode(false);
+            entity.Property(e => e.PaymentMethod).HasMaxLength(50).IsUnicode(false);
+            entity
+                .Property(e => e.PaymentStatus)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasDefaultValue("Pending");
-            entity.Property(e => e.ShippingAddress)
+            entity
+                .Property(e => e.ShippingAddress)
                 .HasMaxLength(500)
                 .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.ShippingDistrict)
+            entity
+                .Property(e => e.ShippingDistrict)
                 .HasMaxLength(100)
                 .UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.ShippingFee).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.ShippingName)
+            entity.Property(e => e.ShippingName).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.ShippingPhone).HasMaxLength(15).IsUnicode(false);
+            entity
+                .Property(e => e.ShippingProvince)
                 .HasMaxLength(100)
                 .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.ShippingPhone)
-                .HasMaxLength(15)
-                .IsUnicode(false);
-            entity.Property(e => e.ShippingProvince)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.ShippingWard)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.ShippingWard).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.SubTotal).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
 
-            entity.HasOne(d => d.Status).WithMany(p => p.Orders)
+            entity
+                .HasOne(d => d.Status)
+                .WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Orders_OrderStatuses");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+            entity
+                .HasOne(d => d.User)
+                .WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Orders_Users");
@@ -228,23 +219,24 @@ public partial class PhoneStoreDbContext : DbContext
         {
             entity.HasKey(e => e.OrderItemId).HasName("PK__OrderIte__57ED0681AA5B74B6");
 
-            entity.Property(e => e.ProductName)
-                .HasMaxLength(200)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.TotalPrice)
+            entity.Property(e => e.ProductName).HasMaxLength(200).UseCollation("Vietnamese_CI_AS");
+            entity
+                .Property(e => e.TotalPrice)
                 .HasComputedColumnSql("([UnitPrice]*[Quantity])", true)
                 .HasColumnType("decimal(29, 2)");
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.VariantName)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.VariantName).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
+            entity
+                .HasOne(d => d.Order)
+                .WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderItems_Orders");
 
-            entity.HasOne(d => d.Variant).WithMany(p => p.OrderItems)
+            entity
+                .HasOne(d => d.Variant)
+                .WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.VariantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderItems_Variants");
@@ -256,12 +248,8 @@ public partial class PhoneStoreDbContext : DbContext
 
             entity.HasIndex(e => e.StatusName, "UQ__OrderSta__05E7698A7E34CB59").IsUnique();
 
-            entity.Property(e => e.Description)
-                .HasMaxLength(200)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.StatusName)
-                .HasMaxLength(50)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.Description).HasMaxLength(200).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.StatusName).HasMaxLength(50).UseCollation("Vietnamese_CI_AS");
         });
 
         modelBuilder.Entity<OrderStatusHistory>(entity =>
@@ -271,20 +259,24 @@ public partial class PhoneStoreDbContext : DbContext
             entity.ToTable("OrderStatusHistory");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.Notes)
-                .HasMaxLength(500)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.Notes).HasMaxLength(500).UseCollation("Vietnamese_CI_AS");
 
-            entity.HasOne(d => d.ChangedByNavigation).WithMany(p => p.OrderStatusHistories)
+            entity
+                .HasOne(d => d.ChangedByNavigation)
+                .WithMany(p => p.OrderStatusHistories)
                 .HasForeignKey(d => d.ChangedBy)
                 .HasConstraintName("FK_OrderStatusHistory_Users");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderStatusHistories)
+            entity
+                .HasOne(d => d.Order)
+                .WithMany(p => p.OrderStatusHistories)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderStatusHistory_Orders");
 
-            entity.HasOne(d => d.Status).WithMany(p => p.OrderStatusHistories)
+            entity
+                .HasOne(d => d.Status)
+                .WithMany(p => p.OrderStatusHistories)
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderStatusHistory_OrderStatuses");
@@ -304,35 +296,35 @@ public partial class PhoneStoreDbContext : DbContext
 
             entity.HasIndex(e => e.ProductCode, "UQ__Products__2F4E024F5C781468").IsUnique();
 
-            entity.Property(e => e.ChipSet)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.ChipSet).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Description).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.OperatingSystem)
+            entity
+                .Property(e => e.OperatingSystem)
                 .HasMaxLength(50)
                 .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.ProductCode)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.ProductName)
-                .HasMaxLength(200)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.ProductCode).HasMaxLength(50).IsUnicode(false);
+            entity.Property(e => e.ProductName).HasMaxLength(200).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.Ram).HasColumnName("RAM");
             entity.Property(e => e.Resolution).HasMaxLength(50);
             entity.Property(e => e.ScreenSize).HasColumnType("decimal(3, 1)");
-            entity.Property(e => e.ShortDescription)
+            entity
+                .Property(e => e.ShortDescription)
                 .HasMaxLength(500)
                 .UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
 
-            entity.HasOne(d => d.Brand).WithMany(p => p.Products)
+            entity
+                .HasOne(d => d.Brand)
+                .WithMany(p => p.Products)
                 .HasForeignKey(d => d.BrandId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Products_Brands");
 
-            entity.HasOne(d => d.Category).WithMany(p => p.Products)
+            entity
+                .HasOne(d => d.Category)
+                .WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Products_Categories");
@@ -343,21 +335,24 @@ public partial class PhoneStoreDbContext : DbContext
             entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F70C8D7876AA");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.ImageAlt)
-                .HasMaxLength(200)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.ImageType)
+            entity.Property(e => e.ImageAlt).HasMaxLength(200).UseCollation("Vietnamese_CI_AS");
+            entity
+                .Property(e => e.ImageType)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasDefaultValue("product");
             entity.Property(e => e.ImageUrl).HasMaxLength(500);
 
-            entity.HasOne(d => d.Product).WithMany(p => p.ProductImages)
+            entity
+                .HasOne(d => d.Product)
+                .WithMany(p => p.ProductImages)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductImages_Products");
 
-            entity.HasOne(d => d.Variant).WithMany(p => p.ProductImages)
+            entity
+                .HasOne(d => d.Variant)
+                .WithMany(p => p.ProductImages)
                 .HasForeignKey(d => d.VariantId)
                 .HasConstraintName("FK_ProductImages_Variants");
         });
@@ -369,21 +364,25 @@ public partial class PhoneStoreDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.ReviewText).UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.Title)
-                .HasMaxLength(200)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.Title).HasMaxLength(200).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.ProductReviews)
+            entity
+                .HasOne(d => d.Order)
+                .WithMany(p => p.ProductReviews)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK_ProductReviews_Orders");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.ProductReviews)
+            entity
+                .HasOne(d => d.Product)
+                .WithMany(p => p.ProductReviews)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductReviews_Products");
 
-            entity.HasOne(d => d.User).WithMany(p => p.ProductReviews)
+            entity
+                .HasOne(d => d.User)
+                .WithMany(p => p.ProductReviews)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductReviews_Users");
@@ -399,30 +398,30 @@ public partial class PhoneStoreDbContext : DbContext
 
             entity.HasIndex(e => e.Sku, "IX_ProductVariants_SKU");
 
-            entity.HasIndex(e => new { e.ProductId, e.VariantName }, "UQ_ProductVariants_ProductVariant").IsUnique();
+            entity
+                .HasIndex(
+                    e => new { e.ProductId, e.VariantName },
+                    "UQ_ProductVariants_ProductVariant"
+                )
+                .IsUnique();
 
             entity.HasIndex(e => e.Sku, "UQ__ProductV__CA1ECF0DAC148F4C").IsUnique();
 
-            entity.Property(e => e.Color)
-                .HasMaxLength(50)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.Color).HasMaxLength(50).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Dimensions).HasMaxLength(50);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.MinStockLevel).HasDefaultValue(5);
             entity.Property(e => e.OriginalPrice).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.SalePrice).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.Sku)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("SKU");
+            entity.Property(e => e.Sku).HasMaxLength(100).IsUnicode(false).HasColumnName("SKU");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.VariantName)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.VariantName).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
             entity.Property(e => e.Weight).HasColumnType("decimal(8, 2)");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.ProductVariants)
+            entity
+                .HasOne(d => d.Product)
+                .WithMany(p => p.ProductVariants)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductVariants_Products");
@@ -435,7 +434,9 @@ public partial class PhoneStoreDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
 
-            entity.HasOne(d => d.User).WithMany(p => p.ShoppingCarts)
+            entity
+                .HasOne(d => d.User)
+                .WithMany(p => p.ShoppingCarts)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ShoppingCarts_Users");
@@ -452,54 +453,30 @@ public partial class PhoneStoreDbContext : DbContext
             entity.HasIndex(e => e.Email, "UQ__Users__A9D10534091A7B2F").IsUnique();
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.DefaultAddress)
+            entity
+                .Property(e => e.DefaultAddress)
                 .HasMaxLength(500)
                 .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.District)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.Email)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.EmailVerificationToken)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.FirstName)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.FullName)
-                .HasMaxLength(201)
-                .HasComputedColumnSql("(([FirstName]+' ')+[LastName])", true)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.Gender)
-                .HasMaxLength(10)
-                .IsUnicode(false);
-            entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.LastName)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.PasswordHash)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.PasswordResetToken)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.PhoneNumber)
-                .HasMaxLength(15)
-                .IsUnicode(false);
-            entity.Property(e => e.Province)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.RoleId).HasDefaultValue(2);
-            entity.Property(e => e.Salt)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.Ward)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.District).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.Email).HasMaxLength(255).IsUnicode(false);
+            entity.Property(e => e.EmailVerificationToken).HasMaxLength(255).IsUnicode(false);
+            entity.Property(e => e.FirstName).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
 
-            entity.HasOne(d => d.Role).WithMany(p => p.Users)
+            entity.Property(e => e.Gender).HasMaxLength(10).IsUnicode(false);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.LastName).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.PasswordHash).HasMaxLength(255).IsUnicode(false);
+            entity.Property(e => e.PasswordResetToken).HasMaxLength(255).IsUnicode(false);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(15).IsUnicode(false);
+            entity.Property(e => e.Province).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.RoleId).HasDefaultValue(2);
+
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Ward).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
+
+            entity
+                .HasOne(d => d.Role)
+                .WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Users_UserRoles");
@@ -509,34 +486,26 @@ public partial class PhoneStoreDbContext : DbContext
         {
             entity.HasKey(e => e.AddressId).HasName("PK__UserAddr__091C2AFB753473EF");
 
-            entity.Property(e => e.AddressLine)
-                .HasMaxLength(500)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.AddressType)
+            entity.Property(e => e.AddressLine).HasMaxLength(500).UseCollation("Vietnamese_CI_AS");
+            entity
+                .Property(e => e.AddressType)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasDefaultValue("shipping");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.District)
+            entity.Property(e => e.District).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.PhoneNumber).HasMaxLength(15).IsUnicode(false);
+            entity.Property(e => e.PostalCode).HasMaxLength(10).IsUnicode(false);
+            entity.Property(e => e.Province).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
+            entity
+                .Property(e => e.RecipientName)
                 .HasMaxLength(100)
                 .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.PhoneNumber)
-                .HasMaxLength(15)
-                .IsUnicode(false);
-            entity.Property(e => e.PostalCode)
-                .HasMaxLength(10)
-                .IsUnicode(false);
-            entity.Property(e => e.Province)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.RecipientName)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.Ward)
-                .HasMaxLength(100)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.Ward).HasMaxLength(100).UseCollation("Vietnamese_CI_AS");
 
-            entity.HasOne(d => d.User).WithMany(p => p.UserAddresses)
+            entity
+                .HasOne(d => d.User)
+                .WithMany(p => p.UserAddresses)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_UserAddresses_Users");
@@ -548,12 +517,8 @@ public partial class PhoneStoreDbContext : DbContext
 
             entity.HasIndex(e => e.RoleName, "UQ__UserRole__8A2B61606F2263B7").IsUnique();
 
-            entity.Property(e => e.Description)
-                .HasMaxLength(200)
-                .UseCollation("Vietnamese_CI_AS");
-            entity.Property(e => e.RoleName)
-                .HasMaxLength(50)
-                .UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.Description).HasMaxLength(200).UseCollation("Vietnamese_CI_AS");
+            entity.Property(e => e.RoleName).HasMaxLength(50).UseCollation("Vietnamese_CI_AS");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -1,173 +1,216 @@
-# Phone Store Admin Dashboard
+# Phone Store Admin Panel
 
-A professional React admin dashboard built with Ant Design and AdminLTE template for managing a phone store.
+Giao diện quản trị cho hệ thống cửa hàng điện thoại, được xây dựng với React + Tailwind CSS.
 
-## Features
+## Tính năng
 
-- 🎨 **Modern UI**: Built with Ant Design components and AdminLTE template
-- 📱 **Responsive Design**: Works on desktop, tablet, and mobile devices
-- 🔧 **Brand Management**: Full CRUD operations for brand management
-- 📂 **Category Management**: Full CRUD operations for category management
-- 📊 **Dashboard**: Overview statistics and recent data
-- 🔄 **Real-time Updates**: Live data updates from WebAPI backend
-- 🎯 **Professional Design Pattern**: Clean, maintainable code structure
+- 🔐 **Xác thực người dùng**: Đăng nhập/đăng xuất admin
+- 📊 **Dashboard**: Tổng quan thống kê hệ thống
+- 👥 **Quản lý người dùng**: CRUD operations cho người dùng
+- 🏷️ **Quản lý thương hiệu**: CRUD operations cho thương hiệu
+- 📦 **Quản lý danh mục**: CRUD operations cho danh mục
+- 🎨 **Giao diện hiện đại**: Thiết kế responsive với Tailwind CSS
+- 🔄 **Tích hợp API**: Kết nối với WebAPI backend
 
-## Tech Stack
+## Công nghệ sử dụng
 
-- **React 18** - Frontend framework
-- **Ant Design 5** - UI component library
-- **React Router 6** - Client-side routing
-- **Axios** - HTTP client for API calls
-- **AdminLTE 3** - Admin template styling
+- **React 18**: Framework frontend
+- **Tailwind CSS**: Styling framework
+- **React Router**: Routing
+- **Axios**: HTTP client
+- **React Hook Form**: Form handling
+- **React Hot Toast**: Notifications
+- **Lucide React**: Icons
 
-## Project Structure
+## Cài đặt
 
-```
-WebADMIN/
-├── public/
-│   └── index.html
-├── src/
-│   ├── components/
-│   │   ├── Dashboard.js          # Main dashboard component
-│   │   ├── BrandManagement.js    # Brand CRUD operations
-│   │   └── CategoryManagement.js # Category CRUD operations
-│   ├── services/
-│   │   └── api.js               # API service layer
-│   ├── App.js                   # Main app component with layout
-│   ├── index.js                 # App entry point
-│   └── index.css                # AdminLTE styles
-├── package.json
-└── README.md
-```
-
-## Installation
-
-1. Navigate to the WebADMIN directory:
-   ```bash
-   cd WebADMIN
-   ```
-
-2. Install dependencies:
+1. **Cài đặt dependencies:**
    ```bash
    npm install
    ```
 
-3. Start the development server:
+2. **Chạy development server:**
    ```bash
-   npm start
+   npm run dev
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+3. **Build cho production:**
+   ```bash
+   npm run build
+   ```
 
-## Configuration
+## Cấu hình
 
-### API Configuration
+### API Endpoints
 
-Update the API base URL in `src/services/api.js`:
+Ứng dụng được cấu hình để kết nối với WebAPI tại `http://localhost:5000/api`:
 
-```javascript
-const API_BASE_URL = 'https://localhost:7000/api'; // Update to your WebAPI URL
+- **Auth**: `/api/auth/login`
+- **Users**: `/api/user`
+- **Brands**: `/api/brand`
+- **Categories**: `/api/category`
+
+### Environment Variables
+
+Tạo file `.env` nếu cần thay đổi cấu hình:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
-### Features
+## Cấu trúc dự án
 
-#### Dashboard
-- Overview statistics (Total Brands, Total Categories, Active counts)
-- Recent brands and categories tables
-- Quick action buttons
+```
+src/
+├── components/          # Reusable components
+│   ├── Layout/         # Layout components (Sidebar, Header, Layout)
+│   ├── DataTable.jsx   # Data table component
+│   ├── Modal.jsx       # Modal component
+│   └── LoginForm.jsx   # Login form component
+├── contexts/           # React contexts
+│   └── AuthContext.jsx # Authentication context
+├── pages/              # Page components
+│   ├── Dashboard.jsx
+│   ├── UserManagement.jsx
+│   ├── BrandManagement.jsx
+│   ├── CategoryManagement.jsx
+│   └── LoginPage.jsx
+├── services/           # API services
+│   └── api.js         # API configuration and endpoints
+├── App.jsx            # Main app component
+├── main.jsx           # App entry point
+└── index.css          # Global styles
+```
 
-#### Brand Management
-- View all brands in a paginated table
-- Add new brands with logo support
-- Edit existing brand information
-- Delete brands with confirmation
-- Filter by status (Active/Inactive)
-- Sort by name and creation date
+## Sử dụng
 
-#### Category Management
-- View all categories in a paginated table
-- Add new categories
-- Edit existing category information
-- Delete categories with confirmation
-- Filter by status (Active/Inactive)
-- Sort by name and creation date
+### Đăng nhập
 
-## Design Patterns Used
+1. Truy cập `/login`
+2. Nhập email và mật khẩu admin
+3. Sau khi đăng nhập thành công, sẽ được chuyển hướng đến dashboard
 
-### 1. Service Layer Pattern
-- Centralized API calls in `services/api.js`
-- Separation of concerns between UI and data access
-- Easy to maintain and test
+### Quản lý dữ liệu
 
-### 2. Component Composition
-- Reusable components with clear responsibilities
-- Props-based communication
-- Clean component hierarchy
+- **Dashboard**: Xem tổng quan thống kê
+- **Người dùng**: Thêm, sửa, xóa, xem danh sách người dùng
+- **Thương hiệu**: Quản lý các thương hiệu sản phẩm
+- **Danh mục**: Quản lý các danh mục sản phẩm
 
-### 3. State Management
-- Local state management with React hooks
-- Centralized loading and error states
-- Optimistic updates for better UX
+### Tính năng chính
 
-### 4. Error Handling
-- Global error handling with interceptors
-- User-friendly error messages
-- Graceful fallbacks
+- **Tìm kiếm**: Tìm kiếm dữ liệu theo tên, email
+- **Phân trang**: Hiển thị dữ liệu theo trang
+- **Modal forms**: Form thêm/sửa trong modal
+- **Responsive**: Giao diện tương thích mobile
+- **Toast notifications**: Thông báo thành công/lỗi
 
 ## API Integration
 
-The dashboard connects to your WebAPI backend with the following endpoints:
+Ứng dụng sử dụng các API endpoints từ WebAPI:
 
-### Brand Endpoints
-- `GET /api/brand` - Get all brands
-- `GET /api/brand/{id}` - Get brand by ID
-- `POST /api/brand` - Create new brand
-- `PUT /api/brand/{id}` - Update brand
-- `DELETE /api/brand/{id}` - Delete brand
+### Authentication
+```javascript
+// Login
+POST /api/auth/login
+{
+  "email": "admin@example.com",
+  "password": "password"
+}
+```
 
-### Category Endpoints
-- `GET /api/category` - Get all categories
-- `GET /api/category/{id}` - Get category by ID
-- `POST /api/category` - Create new category
-- `PUT /api/category/{id}` - Update category
-- `DELETE /api/category/{id}` - Delete category
+### Users
+```javascript
+// Get all users
+GET /api/user
 
-## Customization
+// Create user
+POST /api/user
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john@example.com",
+  // ... other fields
+}
 
-### Styling
-- AdminLTE theme colors can be modified in `src/index.css`
-- Ant Design theme can be customized in `src/App.js`
+// Update user
+PUT /api/user/{id}
 
-### Adding New Features
-1. Create new components in `src/components/`
-2. Add API methods in `src/services/api.js`
-3. Update routing in `src/App.js`
-4. Add navigation items in the sidebar
+// Delete user
+DELETE /api/user/{id}
+```
 
-## Browser Support
+### Brands
+```javascript
+// Get all brands
+GET /api/brand
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+// Create brand
+POST /api/brand
+{
+  "brandName": "Apple",
+  "brandLogo": "https://example.com/logo.png",
+  "description": "Brand description",
+  "isActive": true
+}
+
+// Update brand
+PUT /api/brand/{id}
+
+// Delete brand
+DELETE /api/brand/{id}
+```
+
+### Categories
+```javascript
+// Get all categories
+GET /api/category
+
+// Create category
+POST /api/category
+{
+  "categoryName": "Smartphones",
+  "description": "Category description",
+  "isActive": true
+}
+
+// Update category
+PUT /api/category/{id}
+
+// Delete category
+DELETE /api/category/{id}
+```
 
 ## Development
 
-### Available Scripts
+### Scripts
 
-- `npm start` - Runs the app in development mode
-- `npm build` - Builds the app for production
-- `npm test` - Launches the test runner
-- `npm eject` - Ejects from Create React App
+- `npm run dev`: Chạy development server
+- `npm run build`: Build cho production
+- `npm run preview`: Preview build
+- `npm run lint`: Chạy ESLint
 
-### Building for Production
+### Code Style
 
-```bash
-npm run build
-```
+- Sử dụng functional components với hooks
+- Tailwind CSS cho styling
+- ESLint cho code quality
+- Prettier cho code formatting
 
-This builds the app for production to the `build` folder.
+## Troubleshooting
+
+### Lỗi kết nối API
+
+1. Kiểm tra WebAPI có đang chạy không
+2. Kiểm tra URL API trong `vite.config.js`
+3. Kiểm tra CORS settings trong WebAPI
+
+### Lỗi authentication
+
+1. Kiểm tra token có được lưu trong localStorage
+2. Kiểm tra API response format
+3. Kiểm tra AuthContext implementation
 
 ## License
 
-This project is part of the Phone Store application.
+MIT License

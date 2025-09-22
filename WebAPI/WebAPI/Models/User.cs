@@ -11,13 +11,9 @@ public partial class User
 
     public string PasswordHash { get; set; } = null!;
 
-    public string Salt { get; set; } = null!;
-
     public string FirstName { get; set; } = null!;
 
     public string LastName { get; set; } = null!;
-
-    public string FullName { get; set; } = null!;
 
     public string? PhoneNumber { get; set; }
 
@@ -53,11 +49,13 @@ public partial class User
 
     public virtual ICollection<CouponUsage> CouponUsages { get; set; } = new List<CouponUsage>();
 
-    public virtual ICollection<OrderStatusHistory> OrderStatusHistories { get; set; } = new List<OrderStatusHistory>();
+    public virtual ICollection<OrderStatusHistory> OrderStatusHistories { get; set; } =
+        new List<OrderStatusHistory>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-    public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
+    public virtual ICollection<ProductReview> ProductReviews { get; set; } =
+        new List<ProductReview>();
 
     public virtual UserRole Role { get; set; } = null!;
 

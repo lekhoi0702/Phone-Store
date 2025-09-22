@@ -75,9 +75,9 @@ namespace WebAPI.Services
                 }
                 // GENERATE TOKEN
                 var token = _tokenService.GenerateToken(user);
-                var expiresAt = DateTime.UtcNow.AddMinutes(60);
+                var expiresAt = DateTime.Now.AddMinutes(60);
                 //UPDATE LAST LOGIN
-                user.LastLoginAt = DateTime.UtcNow;
+                user.LastLoginAt = DateTime.Now;
                 await _context.SaveChangesAsync();
 
                 //CREATE RESPONSE
@@ -108,6 +108,36 @@ namespace WebAPI.Services
                     Success = false,
                     Error = new List<string> { ex.Message },
                     Message = "Lỗi đăng nhập",
+                };
+            }
+        }
+
+        public async Task<ApiResponseDTO<LoginResponseDTO>> CreateStaffRequest(
+            CreateStaffRequestDTO createStaffRequestDTO
+        )
+        {
+            try
+            {
+                //CHECK MAIL
+                if (!IsValidEmail(createStaffRequestDTO.Email))
+                {
+                    return ApiResponseDTO<LoginResponseDTO>
+                    { 
+                        Success = false,
+                    Error = new List<string> { ex.Message },
+                    Message = "Lỗi đăng ký",
+                    }
+                 }
+                //CHECK USER IN DATABASE
+                //CHECK VERIFY EMAIL
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponseDTO<LoginResponseDTO>
+                {
+                    Success = false,
+                    Error = new List<string> { ex.Message },
+                    Message = "Lỗi đăng ký",
                 };
             }
         }
