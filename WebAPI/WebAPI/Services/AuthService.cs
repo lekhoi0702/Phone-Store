@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.DTOs;
 using WebAPI.Interfaces;
@@ -112,32 +115,100 @@ namespace WebAPI.Services
             }
         }
 
-        public async Task<ApiResponseDTO<LoginResponseDTO>> CreateStaffRequest(
-            CreateStaffRequestDTO createStaffRequestDTO
+        //REGISTER CUSTOMER
+        public async Task<ApiResponseDTO<RegisterResponseDTO>> RegisterAccountAsync(
+            RegisterRequestDTO registerRequestDTO,
+            int? adminUserId
         )
         {
             try
             {
-                //CHECK MAIL
-                if (!IsValidEmail(createStaffRequestDTO.Email))
+                //CHECK ADMIN IF CREATE STAFF ACCOUNT
+                var admin = _context.Users.FirstOrDefault(x => x.UserId == adminUserId);
+                if (admin == null || admin.RoleId != 1)
                 {
-                    return ApiResponseDTO<LoginResponseDTO>
-                    { 
+                    return new ApiResponseDTO<RegisterResponseDTO>
+                    {
                         Success = false,
-                    Error = new List<string> { ex.Message },
-                    Message = "Lỗi đăng ký",
-                    }
-                 }
-                //CHECK USER IN DATABASE
-                //CHECK VERIFY EMAIL
+                        Message = "Lỗi đăng ký",
+                        Error = new List<string>
+                        {
+                            "Chỉ admin mới được quyền tạo tài khoản nhân viên",
+                        },
+                    };
+                }
+
+                //CHECK EXISTING EMAIL
+                if (!IsExistingEmail(registerRequestDTO.Email))
+                {
+                    return new ApiResponseDTO<RegisterResponseDTO>
+                    {
+                        Success = false,
+                        Message = "Lỗi Email",
+                        Error = new List<string> { "Email đã tồn tại" },
+                    };
+                }
+                //CHECK EXISTING PHONENUMBER
+                if (!IsExistingPhoneNumber(registerRequestDTO.PhoneNumber))
+                {
+                    return new ApiResponseDTO<RegisterResponseDTO>
+                    {
+                        Success = false,
+                        Message = "Lỗi Số điện thoại",
+                        Error = new List<string> { "Số điện thoại đã tồn tại" },
+                    };
+                }
+                //HASH PASSWORD
+                var password = _passwordService.HashPassword(registerRequestDTO.ConfirmPassword);
+
+                //CREATE NEW USER WITH ROLEID = 3
+                var newUser = new User
+                {
+                    Email = registerRequestDTO.Email,
+                    PasswordHash = password,
+                    FirstName = registerRequestDTO.FirstName,
+                    LastName = registerRequestDTO.LastName,
+                    PhoneNumber = registerRequestDTO.PhoneNumber,
+                    DateOfBirth = registerRequestDTO.DateOfBirth,
+                    DefaultAddress = registerRequestDTO.DefaultAddress,
+                    Ward = registerRequestDTO.Ward,
+                    District = registerRequestDTO.District,
+                    Province = registerRequestDTO.Province,
+                    RoleId = registerRequestDTO.RoleId,
+                    IsActive = true,
+                    IsEmailVerified = false,
+                    EmailVerificationToken = Guid.NewGuid().ToString(),
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                };
+
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+                var response = new RegisterResponseDTO
+                {
+                    UserId = newUser.UserId,
+                    Email = newUser.Email,
+                    PhoneNumber = newUser.PhoneNumber,
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    RoleId = newUser.RoleId,
+                    IsEmailVerified = newUser.IsEmailVerified,
+                    CreatedAt = newUser.CreatedAt,
+                };
+                return new ApiResponseDTO<RegisterResponseDTO>
+                {
+                    Success = true,
+                    Message = "Đăng ký thành công",
+                    Data = response,
+                };
             }
             catch (Exception ex)
             {
-                return new ApiResponseDTO<LoginResponseDTO>
+                return new ApiResponseDTO<RegisterResponseDTO>
                 {
                     Success = false,
+                    Message = "Lỗi đăng ký tài khoản",
                     Error = new List<string> { ex.Message },
-                    Message = "Lỗi đăng ký",
                 };
             }
         }
@@ -150,6 +221,32 @@ namespace WebAPI.Services
                 return addr.Address == email;
             }
             catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsExistingEmail(string email)
+        {
+            try
+            {
+                var result = _context.Users.FirstOrDefault(x => x.Email == email);
+                return result == null;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        private bool IsExistingPhoneNumber(string phoneNumber)
+        {
+            try
+            {
+                var result = _context.Users.FirstOrDefault(x => x.PhoneNumber == phoneNumber);
+                return result == null;
+            }
+            catch (Exception ex)
             {
                 return false;
             }

@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using WebAPI.Interfaces;
 using WebAPI.Models;
+
 namespace WebAPI.Services
 {
     public class TokenService : ITokenService
@@ -29,7 +30,8 @@ namespace WebAPI.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim("RoleId", user.RoleId.ToString())
+                new Claim("RoleId", user.RoleId.ToString()),
+                new Claim("UserId", user.UserId.ToString()),
             };
 
             var token = new JwtSecurityToken(
