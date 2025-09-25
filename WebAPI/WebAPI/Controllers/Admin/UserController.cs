@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/admin/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly PhoneStoreDbContext _context;
@@ -30,7 +30,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("userId={id}")]
     public IActionResult GetUserById(int id)
     {
         try
@@ -48,8 +48,8 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost]
-    public IActionResult CreateUser(User user)
+    [HttpPost("create")]
+    public IActionResult CreateUser(User user, int roleId)
     {
         try
         {
@@ -57,7 +57,7 @@ public class UserController : ControllerBase
             {
                 return NotFound();
             }
-            user.RoleId = 3;
+
             _context.Users.Add(user);
             _context.SaveChanges();
             return CreatedAtAction(nameof(User), new { id = user.UserId });
@@ -68,7 +68,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("update/userId={id}")]
     public IActionResult UpdateUser(User user, int id)
     {
         try

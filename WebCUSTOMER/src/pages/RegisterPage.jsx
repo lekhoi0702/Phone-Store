@@ -3,7 +3,8 @@ import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { FaEye, FaEyeSlash, FaGoogle, FaCalendarAlt, FaArrowLeft } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { authApi } from '../services/api'
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -11,6 +12,7 @@ const RegisterPage = () => {
   const [isStudent, setIsStudent] = useState(false)
   const [promotionalOptIn, setPromotionalOptIn] = useState(false)
   const [vatInvoice, setVatInvoice] = useState(false)
+  const navigate = useNavigate()
 
   const {
     register,
@@ -23,10 +25,34 @@ const RegisterPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log('Register data:', data)
-      toast.success('Đăng ký thành công!')
+      const payload = {
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phone || null,
+        dateOfBirth: data.birthDate || null,
+        gender: null,
+        defaultAddress: null,
+        ward: null,
+        district: null,
+        province: null,
+        roleId: 2,
+      }
+      const res = await authApi.registerCustomer(payload)
+      if (res.data?.success) {
+        toast.success('Đăng ký thành công!')
+        navigate('/login')
+      } else {
+        const msg = res.data?.message || 'Đăng ký thất bại'
+        const errs = res.data?.error?.join(', ')
+        toast.error(errs ? `${msg}: ${errs}` : msg)
+      }
     } catch (error) {
-      toast.error('Có lỗi xảy ra khi đăng ký')
+      const msg = error.response?.data?.message || 'Có lỗi xảy ra khi đăng ký'
+      const errs = error.response?.data?.error?.join(', ')
+      toast.error(errs ? `${msg}: ${errs}` : msg)
     }
   }
 
@@ -128,16 +154,16 @@ const RegisterPage = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Họ và tên
+                    Họ
                   </label>
                   <input
                     type="text"
-                    {...register('fullName', { required: 'Vui lòng nhập họ và tên' })}
+                    {...register('lastName', { required: 'Vui lòng nhập họ' })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    placeholder="Nhập họ và tên"
+                    placeholder="Nhập họ"
                   />
-                  {errors.fullName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>
+                  {errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>
                   )}
                 </div>
 
@@ -167,6 +193,20 @@ const RegisterPage = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tên
+                  </label>
+                  <input
+                    type="text"
+                    {...register('firstName', { required: 'Vui lòng nhập tên' })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    placeholder="Nhập tên"
+                  />
+                  {errors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Ngày sinh
                   </label>
                   <div className="relative">
@@ -178,14 +218,14 @@ const RegisterPage = () => {
                     <FaCalendarAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email (Không bắt buộc)
+                    Email
                   </label>
                   <input
                     type="email"
                     {...register('email', {
+                      required: 'Vui lòng nhập email',
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                         message: 'Email không hợp lệ'
@@ -259,7 +299,7 @@ const RegisterPage = () => {
                   <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">
-                  Mật khẩu tối thiểu 6 ký tự, có ít nhất 1 chữ số và 1 số
+                  Mật khẩu tối thiểu 6 ký tự, có ít nhất 1 chữ cái và 1 số
                 </p>
               </div>
 

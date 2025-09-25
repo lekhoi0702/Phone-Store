@@ -16,39 +16,39 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('🔍 AuthContext: Checking authentication state...');
+    
+    const token = localStorage.getItem('adminToken');
     const userData = localStorage.getItem('adminUser');
     
-    if (userData) {
+    console.log('🔑 AuthContext: Token exists:', !!token);
+    console.log('👤 AuthContext: User data exists:', !!userData);
+    
+    if (token && userData) {
       try {
-        setUser(JSON.parse(userData));
+        const parsedUser = JSON.parse(userData);
+        console.log('✅ AuthContext: User authenticated:', parsedUser);
+        setUser(parsedUser);
       } catch (error) {
-        console.error('Error parsing user data:', error);
+        console.error('❌ AuthContext: Error parsing user data:', error);
+        localStorage.removeItem('adminToken');
         localStorage.removeItem('adminUser');
       }
+    } else {
+      console.log('❌ AuthContext: No authentication data found');
     }
+    
     setLoading(false);
   }, []);
 
-  const login = async (credentials) => {
-    try {
-      const response = await authAPI.login(credentials);
-      const { success, data, message } = response.data || {};
-
-      if (success && data) {
-        // Backend trả về dữ liệu người dùng trong field Data, không có token
-        localStorage.setItem('adminUser', JSON.stringify(data));
-        setUser(data);
-        return { success: true, data };
-      }
-      
-      return { success: false, message: message || 'Đăng nhập thất bại' };
-    } catch (error) {
-      const message = error.response?.data?.message || 'Đăng nhập thất bại';
-      return { success: false, message };
-    }
+  const login = (userData) => {
+    console.log('🔐 AuthContext: Login called with:', userData);
+    setUser(userData);
   };
 
   const logout = () => {
+    console.log('🚪 AuthContext: Logout called');
+    localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
     setUser(null);
   };
@@ -58,8 +58,10 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     loading,
-    isAuthenticated: !!user,
+    isAuthenticated: !!user // Thêm property này
   };
+
+  console.log(' AuthContext: Rendering with state:', { user: !!user, loading });
 
   return (
     <AuthContext.Provider value={value}>

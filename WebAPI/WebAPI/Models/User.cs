@@ -7,13 +7,13 @@ public partial class User
 {
     public int UserId { get; set; }
 
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; } = null!;
 
-    public string PasswordHash { get; set; } = null!;
+    public string? PasswordHash { get; set; } = null!;
 
-    public string FirstName { get; set; } = null!;
+    public string? FirstName { get; set; } = null!;
 
-    public string LastName { get; set; } = null!;
+    public string? LastName { get; set; } = null!;
 
     public string? PhoneNumber { get; set; }
 
@@ -29,11 +29,11 @@ public partial class User
 
     public string? Province { get; set; }
 
-    public int RoleId { get; set; }
+    public int? RoleId { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
-    public bool IsEmailVerified { get; set; }
+    public bool? IsEmailVerified { get; set; }
 
     public string? EmailVerificationToken { get; set; }
 

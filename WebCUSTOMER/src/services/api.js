@@ -44,7 +44,30 @@ export const authApi = {
     const response = await api.post('/auth/login', credentials)
     return response
   },
-  
+  registerCustomer: async (payload) => {
+    // Backend expects RegisterRequestDTO at POST /auth/register/customer
+    const response = await api.post('/auth/register/customer', payload)
+    return response
+  },
+
+  logout: () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('userInfo')
+  }
+}
+
+// Auth API
+export const UserApi = {
+  login: async (credentials) => {
+    const response = await api.post('/auth/login', credentials)
+    return response
+  },
+  registerCustomer: async (payload) => {
+    // Backend expects RegisterRequestDTO at POST /auth/register/customer
+    const response = await api.post('/auth/register/customer', payload)
+    return response
+  },
+
   logout: () => {
     localStorage.removeItem('authToken')
     localStorage.removeItem('userInfo')

@@ -32,6 +32,7 @@ namespace WebAPI.Services
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim("RoleId", user.RoleId.ToString()),
                 new Claim("UserId", user.UserId.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.RoleId.ToString()),
             };
 
             var token = new JwtSecurityToken(

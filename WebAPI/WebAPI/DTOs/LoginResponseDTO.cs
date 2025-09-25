@@ -13,5 +13,8 @@ namespace WebAPI.DTOs
         public string? Ward { get; set; }
         public string? District { get; set; }
         public string? Provine { get; set; }
+        public string? Token { get; set; }
+        public DateTime ExpiresAt { get; set; }
+        public int roleId { get; set; }
     }
 }

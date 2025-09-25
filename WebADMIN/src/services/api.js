@@ -16,22 +16,59 @@ api.interceptors.request.use(
     const token = localStorage.getItem('adminToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('🔑 Request with token:', {
+        url: config.url,
+        method: config.method,
+        token: token.substring(0, 20) + '...'
+      });
+    } else {
+      console.log('❌ Request without token:', {
+        url: config.url,
+        method: config.method
+      });
+      
+      // Nếu không có token và không phải là request login, có thể cần redirect
+      if (!config.url?.includes('/auth/login')) {
+        console.log('⚠️ No token for protected endpoint, this may cause 401');
+      }
     }
     return config;
   },
   (error) => {
+    console.error('❌ Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
 
 // Interceptor để xử lý response
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('✅ Response success:', {
+      url: response.config.url,
+      status: response.status,
+      data: response.data
+    });
+    return response;
+  },
   (error) => {
+    console.error('❌ Response error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      message: error.message
+    });
+    
     if (error.response?.status === 401) {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      window.location.href = '/login';
+      console.log('🚪 401 Unauthorized - Token may be invalid or expired');
+      
+      // Chỉ redirect nếu không phải là request đăng nhập
+      if (!error.config?.url?.includes('/auth/login')) {
+        console.log('🔄 Redirecting to login page...');
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
@@ -39,7 +76,14 @@ api.interceptors.response.use(
 
 // Auth API
 export const authAPI = {
-  login: (credentials) => api.post('/auth/login', credentials),
+  login: (credentials) => {
+    console.log('🔐 Login request:', credentials);
+    return api.post('/auth/login', credentials);
+  },
+  registerStaff: (staffData) => {
+    console.log(' Register staff request:', staffData);
+    return api.post('/auth/register/staff', staffData);
+  },
 };
 
 // Brand API

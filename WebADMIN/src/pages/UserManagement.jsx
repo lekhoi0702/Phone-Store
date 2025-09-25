@@ -3,9 +3,9 @@ import { Plus, Search, Filter } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import DataTable from '../components/DataTable';
 import Modal from '../components/Modal';
-import { userAPI } from '../services/api';
+import { userAPI, authAPI } from '../services/api';
 import toast from 'react-hot-toast';
-import bcrypt from 'bcryptjs';
+import { useAuth } from '../contexts/AuthContext';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -13,14 +13,28 @@ const UserManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const { user } = useAuth();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    // Chỉ fetch users khi đã có user (đã đăng nhập)
+    if (user) {
+      console.log('User is authenticated, fetching users...');
+      fetchUsers();
+    } else {
+      console.log('User not authenticated, skipping fetch users');
+    }
+  }, [user]); // Thay đổi dependency từ [] thành [user]
 
   const fetchUsers = async () => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      console.log('No token found, cannot fetch users');
+      return;
+    }
+
+    console.log('Fetching users with token...');
     setLoading(true);
     try {
       const response = await userAPI.getAll();
@@ -35,28 +49,58 @@ const UserManagement = () => {
 
   const handleCreateUser = async (data) => {
     try {
-      // Hash password to match backend's PasswordHash field requirement
-      const salt = bcrypt.genSaltSync(10);
-      const passwordHash = bcrypt.hashSync(data.password, salt);
-
+      console.log('Creating staff with data:', data);
+      console.log('Current token:', localStorage.getItem('adminToken'));
+      
+      // Kiểm tra dữ liệu đầu vào
+      console.log('Form data validation:');
+      console.log('- Email:', data.email);
+      console.log('- Password:', data.password ? 'Present' : 'Missing');
+      console.log('- FirstName:', data.firstName);
+      console.log('- LastName:', data.lastName);
+      console.log('- PhoneNumber:', data.phoneNumber);
+      
       const payload = {
         email: data.email,
-        passwordHash: passwordHash,
+        password: data.password,
+        confirmPassword: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        isActive: true,
+        phoneNumber: data.phoneNumber || '',
+        RoleId: 3 // Staff role
       };
 
-      await userAPI.create(payload);
-      toast.success('Tạo tài khoản thành công');
+      console.log('Final payload:', JSON.stringify(payload, null, 2));
+      const response = await authAPI.registerStaff(payload);
+      console.log('Response:', response);
+      
+      toast.success('Tạo tài khoản nhân viên thành công');
       setIsModalOpen(false);
       reset();
       fetchUsers();
-
-      // Note: Backend hiện đang cố định RoleId = 3 trong CreateUser => không thể tạo tài khoản Nhân viên cho đến khi backend cho phép set RoleId.
     } catch (error) {
-      toast.error('Lỗi khi tạo tài khoản');
-      console.error('Error creating user:', error);
+      console.error('Full error object:', error);
+      console.error('Error response:', error.response);
+      console.error('Error status:', error.response?.status);
+      console.error('Error data:', error.response?.data);
+      
+      if (error.response?.status === 401) {
+        toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+      } else if (error.response?.status === 400) {
+        // Hiển thị chi tiết lỗi validation
+        const errorData = error.response?.data;
+        console.log('Validation error details:', errorData);
+        
+        if (errorData?.errors) {
+          const validationErrors = Object.values(errorData.errors).flat();
+          console.log('Validation errors:', validationErrors);
+          toast.error('Lỗi validation: ' + validationErrors.join(', '));
+        } else {
+          toast.error('Lỗi: ' + (errorData?.title || errorData?.message || 'Dữ liệu không hợp lệ'));
+        }
+      } else {
+        toast.error('Lỗi khi tạo tài khoản nhân viên: ' + (error.response?.data?.message || error.message));
+      }
     }
   };
 
@@ -135,6 +179,14 @@ const UserManagement = () => {
     {
       key: 'phoneNumber',
       header: 'Số điện thoại'
+    },
+    {
+      key: 'roleId',
+      header: 'Vai trò',
+      render: (value) => {
+        const roles = { 1: 'Admin', 2: 'Khách hàng', 3: 'Nhân viên' };
+        return <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{roles[value] || 'Unknown'}</span>;
+      }
     },
     {
       key: 'isActive',
@@ -245,6 +297,16 @@ const UserManagement = () => {
                 placeholder="example@email.com"
               />
               {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+              <input
+                {...register('phoneNumber')}
+                type="tel"
+                className="input-field"
+                placeholder="0123456789"
+              />
             </div>
 
             <div>

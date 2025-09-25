@@ -6,9 +6,15 @@ namespace WebAPI.Interfaces
     public interface IAuthService
     {
         Task<ApiResponseDTO<LoginResponseDTO>> LoginAsync(LoginRequestDTO loginRequest);
-        Task<ApiResponseDTO<RegisterResponseDTO>> RegisterAccountAsync(
-            RegisterRequestDTO registerRequest,
-            int? adminUserId
+        Task<ApiResponseDTO<RegisterResponseDTO>> RegisterCustomerAsync(
+            RegisterRequestDTO registerRequestDTO
         );
+        Task<ApiResponseDTO<RegisterResponseDTO>> RegisterStaffAsync(
+            RegisterRequestDTO registerRequestDTO,
+            int adminuserId
+        );
+
+        //  EMAIL VERIFICATION
+        // Task<ApiResponseDTO<bool>> VerifyEmailAsync(string email);
     }
 }
